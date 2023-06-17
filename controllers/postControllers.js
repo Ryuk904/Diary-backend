@@ -2,9 +2,10 @@ import mongoose from 'mongoose';
 import Post from '../models/Post.js';
 
 export const getAllPosts = async (req,res)=>{
+    const user_id = req.user._id;
     try {
         //find the posts and sort them in descending order of date
-        const posts = await Post.find({}).sort({ createdAt: -1});
+        const posts = await Post.find({user_id}).sort({ createdAt: -1});
         res.status(200).json(posts);
     } catch (err) {
         res.status(404).json({error:err.message});
@@ -35,9 +36,9 @@ export const getPost = async (req,res)=>{
 
 export const createPost = async (req,res)=>{
     const { date, title, content} = req.body;
-
+    const user_id = req.user._id;
     try {
-        const post = await Post.create({date,title,content});
+        const post = await Post.create({date,title,content,user_id});
         res.status(200).json(post);
     } catch (err) {
         res.status(400).json({error: err.message});
